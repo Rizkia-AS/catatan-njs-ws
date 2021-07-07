@@ -1,0 +1,28 @@
+<!--  merangkai file yg di partials dengan menggunakan method include(`path`) -->
+<%- include(`partials/header`) %>
+<%- include(`partials/nav`) %>
+
+
+
+<!-- menggunakan syntax js variabel didalam index.ejs -->
+   <% const nama = 'rizkia'; %>
+    <h1> nama = <%= nama %> </h1>
+
+   <h3>ini data dari data base = <%= db %></h3>
+
+   <!-- melakukan pengulangan dengan ejs didalam index.ejs -->
+   <% siswa.map((el) => { %>
+      <ul>
+         <li>nama : <%= el.nama %> </li>
+         <li>kelas : <%= el.kelas %></li>
+      </ul>
+   <% }) %>
+
+   
+
+    <h1>halaman default</h1>
+
+
+// merangkai file yg di partials dengan menggunakan method include(`path`)
+
+<%- include(`partials/footer`) %>

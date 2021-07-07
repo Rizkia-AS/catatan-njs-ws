@@ -1,0 +1,10 @@
+View / Template engine
+adalah template untuk mempermudah mengelola tampilan web
+- memungkinkan kita membuat file template statis untuk aplikasi kita
+- engine tersebtur mengganti variable pada template kita dengan nilai sebenarnnya, lalu menampilkannya dalam bentuk HTML
+-  Mempermudah pembuatan halaman web kita
+
+EJS (Embedded Javascript Template)
+- Simple Syntax
+- simple setup 
+- speedy 

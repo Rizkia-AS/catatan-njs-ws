@@ -1,0 +1,33 @@
+/*.navigasi {
+	display: flex;
+	justify-content: space-evenly;
+	width: 50%;
+	padding: 5px;
+	color: white;
+	background-color: darkgrey;
+}
+
+.navigasi li a{
+	color: white;
+	text-decoration: none;
+}
+
+
+.container {
+	margin: 0 auto;
+}
+
+.tabel-kontak {
+	display: flex;
+	justify-content: center;
+	column-gap: 10px;
+}
+
+.tabel-kontak div{
+	border: 1px solid black;
+	width: 200px;
+}*/
+
+body {
+	background-color: lightgrey;
+}

@@ -39,6 +39,7 @@ const upData = (kontak) => {
 // menambahkan array data kontak baru untuk nantinya diupload
 const addcontact = (data) => {
 	const kontak = loadData();
+	delete data.oldNama;
 	kontak.push(data);
 	return upData(kontak);
 }
@@ -52,11 +53,20 @@ const cekDuplikat = (nm) => {
 	return duplikat;
 }
 
+// hapus kontak
+const deleteContact = (target) => {
+	const filteredContacts = loadData().filter( data => data.nama !== target);
+	upData(filteredContacts); 
+}
+
+
+
 module.exports = {
 	storageCheck,
 	loadData,
 	findContact,
 	upData,
 	addcontact,
-	cekDuplikat
+	cekDuplikat,
+	deleteContact
 }

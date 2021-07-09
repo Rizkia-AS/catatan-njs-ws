@@ -16,7 +16,12 @@
 			  <div class="card-body">
 			    <h5 class="card-title"> <%= db.nama %> </h5>
 			    <h6 class="card-subtitle mb-2 text-muted"><%= db.kelas %></h6>
-			    <a href="/hal/contact" class="card-link">Kembali ke daftar kontak</a>
+
+			    <a href="/hal/contact/edit/<%=db.nama%>" class="btn btn-info badge" onclick="return">Edit</a>
+
+			    <a href="/hal/contact/delete/<%=db.nama%>" class="btn btn-danger badge" onclick="return confirm(`apakah anda yakin ?`)">Hapus</a>
+
+			    <a href="/hal/contact" class="card-link d-block mt-3">Kembali ke daftar kontak</a>
 			  </div>
 			</div>
 			<% } -%>

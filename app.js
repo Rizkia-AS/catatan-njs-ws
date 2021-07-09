@@ -4,7 +4,6 @@ const app = express();
 const port = 3000;
 
 app.set(`view engine`, `ejs`);
-// express.urlencoded digunakan untuk memparse data yg dikirimkan oleh user melalui form
 app.use(express.urlencoded({extended : true})); 
 
 const {
@@ -13,9 +12,9 @@ const {
     findContact,
     upData,
     addcontact,
-    cekDuplikat
+    cekDuplikat,
+    deleteContact
 } = require(`./public/utils/contact.js`);
-
 
 
 
@@ -48,8 +47,7 @@ app.get('/hal/contact/add', (req, res) => {
     });
 })
 
-// proses data kontak
-// app.post fungsi digunakan ketika user mengirimkan sesuatu melalui form
+// proses data kontak yg dikirim addcontact
 app.post(`/hal/contact`, [
     body(`nama`).custom((nm) => {
         const duplikat = cekDuplikat(nm);
@@ -57,7 +55,6 @@ app.post(`/hal/contact`, [
         return true; 
     })
     ] ,(req,res) => {
-    // req.body berisi data yg dikirimkan user berbentuk objek dengan properti sesuai dengan nama pada atribut name di input form
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
         res.render(`addcontact.ejs`, {
@@ -67,12 +64,66 @@ app.post(`/hal/contact`, [
 
     } else {
         addcontact(req.body);
-        // res.redirect digunakan untuk setelah post dilakukan langsung pergi menuju ke hal contact
         res.redirect(`/hal/contact`);
     }
     
 });
 
+
+// proses ubah data dari inputan editcontact.ejs
+app.post(`/hal/update`, [
+    body(`nama`).custom((nm, {req}) => {
+        const duplikat = cekDuplikat(nm);
+        if(nm !== req.body.oldNama && duplikat) {throw new Error(`Nama kontak sudah ada`)}
+        return true; 
+    })
+    ] ,(req,res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        res.render(`editcontact.ejs`, {
+            judul : `editcontact`,
+            target : findContact(req.body.oldNama),
+            errors : errors.array()
+        });
+
+    } else {
+        deleteContact(req.body.oldNama);
+        addcontact(req.body);  
+        res.redirect(`/hal/contact`);
+    }
+    
+});
+
+// proses edit contact
+app.get(`/hal/contact/edit/:nama`, (req,res) => {
+
+    const target = findContact(req.params.nama);
+
+    if(!target) {
+        res.status(404);
+        res.send(`halaman 404`);
+    } else {
+        res.render(`editcontact.ejs`, {
+        judul : `edit kontak`,
+        target,
+    });
+    }
+
+})
+
+// proses delete contact
+app.get(`/hal/contact/delete/:nama`, (req,res) => {
+
+    const target = findContact(req.params.nama);
+
+    if(!target) {
+        res.status(404);
+        res.send(`halaman 404`);
+    } else {
+        deleteContact(req.params.nama);}
+        res.redirect(`/hal/contact`);
+
+})
 
 // halaman detail kontak
 app.get('/hal/contact/:nama', (req, res) => {
@@ -88,14 +139,14 @@ app.get('/hal/contact/:nama', (req, res) => {
 app.get('/hal/main', (req, res) => {
     res.render(`index`,{ 
         judul : `index`, 
-        db : `ini dari db`, 
-        siswa});
+        db : `ini dari db`
+    });
 })
 
 // sebuah pdf
-app.get('/hal/pedeef', (req, res) => {
-    res.sendFile(`pedeef.pdf`);
-})
+// app.get('/hal/pedeef', (req, res) => {
+//     res.sendFile(`../views/pedeef.pdf`);
+// })
 
 app.use(`/`, (req,res) => {
     res.status(404);

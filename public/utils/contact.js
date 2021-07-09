@@ -30,8 +30,33 @@ const findContact = (nama) => {
 }
 
 
+
+// menuliskan / menimpa file db.json dengan data yang baru / upload
+const upData = (kontak) => {
+	fs.writeFileSync(`./public/data/db.json`, JSON.stringify(kontak));
+}
+
+// menambahkan array data kontak baru untuk nantinya diupload
+const addcontact = (data) => {
+	const kontak = loadData();
+	kontak.push(data);
+	return upData(kontak);
+}
+
+// cek nama yang sama
+const cekDuplikat = (nm) => {
+	let duplikat = null;
+	loadData().map(kontak => {
+		if(kontak.nama == nm) {duplikat = true}
+	});
+	return duplikat;
+}
+
 module.exports = {
 	storageCheck,
 	loadData,
-	findContact
+	findContact,
+	upData,
+	addcontact,
+	cekDuplikat
 }

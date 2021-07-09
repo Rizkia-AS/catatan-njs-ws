@@ -1,30 +1,22 @@
 const express = require('express');
+const { body, validationResult } = require(`express-validator`);
 const app = express();
 const port = 3000;
 
 app.set(`view engine`, `ejs`);
-
+// express.urlencoded digunakan untuk memparse data yg dikirimkan oleh user melalui form
+app.use(express.urlencoded({extended : true})); 
 
 const {
     storageCheck,
     loadData,
-    findContact
+    findContact,
+    upData,
+    addcontact,
+    cekDuplikat
 } = require(`./public/utils/contact.js`);
 
 
-
-
-
-const siswa = [
-    {
-        nama : `rizkia`,
-        kelas : 10
-    },
-    {
-        nama : `dini`,
-        kelas : 12
-    },
-]
 
 
 
@@ -39,6 +31,7 @@ app.get('/', (req, res) => {
 })
 
 
+// halaman daftar kontak
 app.get('/hal/contact', (req, res) => {
 
     res.render(`contact`, {
@@ -47,6 +40,41 @@ app.get('/hal/contact', (req, res) => {
     });
 })
 
+// halaman tambah kontak
+app.get('/hal/contact/add', (req, res) => {
+
+    res.render(`addcontact.ejs`, {
+        judul : `addcontact`,
+    });
+})
+
+// proses data kontak
+// app.post fungsi digunakan ketika user mengirimkan sesuatu melalui form
+app.post(`/hal/contact`, [
+    body(`nama`).custom((nm) => {
+        const duplikat = cekDuplikat(nm);
+        if(duplikat) {throw new Error(`Nama kontak sudah ada`)}
+        return true; 
+    })
+    ] ,(req,res) => {
+    // req.body berisi data yg dikirimkan user berbentuk objek dengan properti sesuai dengan nama pada atribut name di input form
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        res.render(`addcontact.ejs`, {
+            judul : `addcontact`,
+            errors : errors.array()
+        });
+
+    } else {
+        addcontact(req.body);
+        // res.redirect digunakan untuk setelah post dilakukan langsung pergi menuju ke hal contact
+        res.redirect(`/hal/contact`);
+    }
+    
+});
+
+
+// halaman detail kontak
 app.get('/hal/contact/:nama', (req, res) => {
 
     res.render(`detail.ejs`, {
@@ -56,8 +84,7 @@ app.get('/hal/contact/:nama', (req, res) => {
     });
 })
 
-
-
+// halaman utaman/main
 app.get('/hal/main', (req, res) => {
     res.render(`index`,{ 
         judul : `index`, 
@@ -65,9 +92,9 @@ app.get('/hal/main', (req, res) => {
         siswa});
 })
 
-
+// sebuah pdf
 app.get('/hal/pedeef', (req, res) => {
-    res.render(`pedeef`);
+    res.sendFile(`pedeef.pdf`);
 })
 
 app.use(`/`, (req,res) => {
